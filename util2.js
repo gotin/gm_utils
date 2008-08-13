@@ -1,3 +1,13 @@
+function $add(parent, children){
+  if(arguments.length < 2) return "";
+  for(var i=1, child; child=arguments[i];i++){
+    if(typeof child == "string"){
+      child = document.createTextNode(child);
+    }
+    parent.appendChild(child);
+  }
+  return parent;
+}
 
 
 function $tag(tagName, attrs, styles){
