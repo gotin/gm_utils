@@ -48,7 +48,7 @@ function $tag(tagName, attrs, styles){
 }
 
 
-"h1 h2 h3 h4 h5 h6 embed div p span a img table tr th td form input textarea select option"
+"h1 h2 h3 h4 h5 h6 embed div p span a img table tr th td form input button textarea select option"
   .split(" ")
   .forEach(function(tagName){
              var func = function(attrs, styles){
@@ -102,7 +102,7 @@ var Keybind = {
       code.push("S");
     } else if(event.ctrlKey){
       code.push("C");
-    } else if(event.altKey){
+    } else if(event.altKey || event.metaKey){
       code.push("M");
     }
     code.push(Keybind.kc2char(event.keyCode));
