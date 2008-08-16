@@ -70,6 +70,12 @@ function $rm(element){
 var Keybind = {
   cb_funcs:{},
   add:function(phrase, func){
+    if(phrase instanceof Array){
+      phrase.forEach(function(p){
+                       Keybind.add(p, func);
+                     });
+      return;
+    }
     this.cb_funcs[phrase] ||(this.cb_funcs[phrase] = []);
     var cb_func = function(event){
       var target = event.target;
@@ -80,6 +86,7 @@ var Keybind = {
           !(tagName == "INPUT" &&
             (!type.type || type=="text")) &&
           tagName != "TEXTAREA")){
+        event.preventDefault();
         func();
       }
     };
