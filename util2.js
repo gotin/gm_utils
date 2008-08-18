@@ -67,6 +67,75 @@ function $rm(element){
   }
 }
 
+
+//
+// XPath
+//
+function getXPath(node) {
+  var xpath  = "";
+  if (node.nodeType == 9 /*DOCUMENT_NODE*/) {
+    return "";
+  } else if(node.nodeType == 3 /*TEXT_NODE*/){
+    xpath = arguments.callee(node.parentNode) + '/text()';
+  } else {
+    var tagName = node.tagName.toLowerCase();
+    if (node.hasAttribute("id")) {
+      xpath = 'id("'+node.getAttribute("id")+'")';
+    } else {
+      xpath = arguments.callee(node.parentNode) + '/' + tagName;
+      if (node.hasAttribute("class")){
+        xpath += '[@class="'+node.getAttribute('class')+'"]';
+      } else {
+        xpath += '['+indexOf(node)+']';
+      }
+    }
+  }
+  return xpath;
+
+  function indexOf (node) {
+    var result = 1;
+    var children = node.parentNode.childNodes;
+    for (var i = 0,l = children.length; i < l; i++) {
+      var child = children[i];
+      if (child.nodeName == node.nodeName &&
+          child.nodeType == node.nodeType) {
+        if(child == node) return result;
+        result++;
+      }
+    }
+    return -1;
+  }
+}
+
+function $X(exp, context) {
+  if (!context) context = document;
+  var resolver = function (prefix) {
+    var o = document.createNSResolver(context)(prefix);
+    return o ? o : (document.contentType == "text/html") ? "" : "http://www.w3.org/1999/xhtml";
+  };
+  exp = document.createExpression(exp, resolver);
+  var result = exp.evaluate(context, XPathResult.ANY_TYPE, null);
+  switch (result.resultType) {
+  case XPathResult.STRING_TYPE : return result.stringValue;
+  case XPathResult.NUMBER_TYPE : return result.numberValue;
+  case XPathResult.BOOLEAN_TYPE: return result.booleanValue;
+  case XPathResult.UNORDERED_NODE_ITERATOR_TYPE: {
+    result = exp.evaluate(context, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    var ret = [];
+    for (var i = 0, len = result.snapshotLength; i < len ; i++) {
+      ret.push(result.snapshotItem(i));
+    }
+    return ret;
+  }
+  }
+  return null;
+}
+
+
+
+//
+// Keybind
+//
 var Keybind = {
   cb_funcs:{},
   add:function(phrase, func){
