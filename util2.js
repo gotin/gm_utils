@@ -76,7 +76,7 @@ function getXPath(node) {
   if (node.nodeType == 9 /*DOCUMENT_NODE*/) {
     return "";
   } else if(node.nodeType == 3 /*TEXT_NODE*/){
-    xpath = arguments.callee(node.parentNode) + '/text()';
+    xpath = arguments.callee(node.parentNode) + '/text()[' + indexOf(node) + ']';
   } else {
     var tagName = node.tagName.toLowerCase();
     if (node.hasAttribute("id")) {
