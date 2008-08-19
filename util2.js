@@ -67,6 +67,18 @@ function $rm(element){
   }
 }
 
+function $rm_content(element){
+  for(var c=null;c=element.firstChild;){
+    $rm(c);
+  }
+}
+
+function $mv_content(from, to){
+  for(var c=null;c=from.lastChild;){
+    $add(to, c);
+  }
+}
+
 
 //
 // XPath
