@@ -74,7 +74,7 @@ function $rm_content(element){
 }
 
 function $mv_content(from, to){
-  for(var c=null;c=from.lastChild;){
+  for(var c=null;c=from.firstChild;){
     $add(to, c);
   }
 }
