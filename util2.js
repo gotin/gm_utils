@@ -150,6 +150,22 @@ function $X(exp, context) {
 //
 var Keybind = {
   cb_funcs:{},
+  callback:function(event){
+    var target = event.target;
+    var tagName = target.tagName;
+    var type = target.type;
+    var phrase = Keybind.code(event);
+    var funcs = Keybind.cb_funcs[phrase];
+    if(funcs
+       && !(tagName == "INPUT" &&
+            (!type.type || type=="text")) &&
+      tagName != "TEXTAREA"){
+      event.preventDefault();
+      funcs.forEach(function(func){
+                      func();
+                    });
+    }
+  },
   add:function(phrase, func){
     if(phrase instanceof Array){
       phrase.forEach(function(p){
@@ -158,21 +174,11 @@ var Keybind = {
       return;
     }
     this.cb_funcs[phrase] ||(this.cb_funcs[phrase] = []);
-    var cb_func = function(event){
-      var target = event.target;
-      var tagName = target.tagName;
-      var type = target.type;
-      if(phrase == Keybind.code(event) &&
-         (phrase == "escape" ||
-          !(tagName == "INPUT" &&
-            (!type.type || type=="text")) &&
-          tagName != "TEXTAREA")){
-        event.preventDefault();
-        func();
-      }
-    };
-    this.cb_funcs[phrase].push(cb_func);
-    document.addEventListener("keydown", cb_func, true);
+    this.cb_funcs[phrase].push(func);
+    if(!this.attached){
+      document.addEventListener("keydown", this.callback, true);
+      this.attached = true;
+    }
   },
   free:function(phrase){
     var cb_funcs = this.cb_funcs[phrase];
