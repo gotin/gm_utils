@@ -96,7 +96,8 @@ function getXPath(node) {
     } else {
       xpath = arguments.callee(node.parentNode) + '/' + tagName;
       if (node.hasAttribute("class")){
-        xpath += '[@class="'+node.getAttribute('class')+'"]';
+        var className = node.getAttribute('class');
+        xpath += '[@class="'+className+'"][' + indexOf(node, className) + ']';
       } else {
         xpath += '['+indexOf(node)+']';
       }
@@ -104,13 +105,15 @@ function getXPath(node) {
   }
   return xpath;
 
-  function indexOf (node) {
+  function indexOf (node, className) {
     var result = 1;
     var children = node.parentNode.childNodes;
     for (var i = 0,l = children.length; i < l; i++) {
       var child = children[i];
       if (child.nodeName == node.nodeName &&
-          child.nodeType == node.nodeType) {
+          child.nodeType == node.nodeType &&
+          (!className || className && child.className == className)
+         ) {
         if(child == node) return result;
         result++;
       }
