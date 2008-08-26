@@ -1,3 +1,16 @@
+function $position(node){
+  var top=0;
+  var left=0;
+  for(;node;node=node.offsetParent){
+    var offsetTop = node.offsetTop;
+    var offsetLeft = node.offsetLeft;
+    if(offsetTop == null || offsetLeft == null)break;
+    top+=offsetTop;
+    left+=offsetLeft;
+  }
+  return [left,top];
+}
+
 function $add(parent, children){
   if(arguments.length < 2) return "";
   for(var i=1, child; child=arguments[i];i++){
